@@ -5,8 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addToast } from "@heroui/toast";
 
-import { buyShipping, generateShipping } from "../actions";
-
+import { buyShipping, generateShipping } from "@/app/actions";
 import { title } from "@/components/primitives";
 import { AddressForm } from "@/components/generate/address-form";
 import { ParcelForm } from "@/components/generate/parcel-form";
@@ -20,7 +19,7 @@ import { GenerateShippingPropsSchema, ShippingSchema } from "@/types/shipping";
 import { searchParamsSerializer } from "@/config/search-params";
 import { siteConfig } from "@/config/site";
 
-export const TabsValue = {
+const TabsValue = {
   To: "To",
   From: "From",
   Parcel: "Parcel",
