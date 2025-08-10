@@ -45,3 +45,11 @@ You can create a `.env.local` file in the root of the project to provide the env
 - [ ] Multiple addresses
 - [ ] Multiple parcels
 - [ ] Shipping label customizations
+- [ ] Better form validation
+- [ ] Zip Code api for auto complete
+
+## Demo
+
+https://shipping-label-rho.vercel.app/
+
+
