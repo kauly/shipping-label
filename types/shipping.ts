@@ -56,7 +56,7 @@ export const ShippingSchema = z.object({
   refund_status: z.string().nullable(),
   scan_form: z.string().nullable(),
   selected_rate: RateSchema.nullable(),
-  tracker: z.string().nullable(),
+  tracker: z.any().nullable(),
   usps_zone: z.number().nullable(),
   forms: z.array(z.unknown()),
   fees: z.array(z.unknown()),

@@ -2,13 +2,15 @@
 
 Application to generate shipping labels using the USPS API. To generate a valid response you need to provide a valid zip code and the state of the zip code. For instance:
 
- - `zipCode`: `89010`
+ - `zipCode`: `94597`
  - `state`: `CA`
+ - `city`: `Acalanes Ridge`
 
 Or
 
- - `zipCode`: `89019`
+ - `zipCode`: `93510`
  - `state`: `CA`
+ - `city`: `Acton`
 
 ## Development
 
@@ -34,3 +36,12 @@ You need to provide the following environment variables:
 You can create a `.env.local` file in the root of the project to provide the environment variables.
 
 
+## Improvements
+
+- [ ] Better UI
+- [ ] Implement tests
+- [ ] User registration
+- [ ] Address and parcel history
+- [ ] Multiple addresses
+- [ ] Multiple parcels
+- [ ] Shipping label customizations

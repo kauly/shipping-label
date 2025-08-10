@@ -27,7 +27,6 @@ type AddressFormProps = {
 export function AddressForm({ title, handleNext, nextStep }: AddressFormProps) {
   const [cities, setCities] = useState<{ key: string; label: string }[]>([]);
   const [state, setState] = useState("");
-  const [city, setCity] = useState("");
 
   const handleStateChange = (ev: ChangeEvent<HTMLSelectElement>) => {
     const state = ev.target.value;
@@ -42,16 +41,8 @@ export function AddressForm({ title, handleNext, nextStep }: AddressFormProps) {
         label: city.name,
       }));
 
-      setCity("");
-
       setCities(citiesMap);
     }
-  };
-
-  const handleCityChange = (ev: ChangeEvent<HTMLSelectElement>) => {
-    const city = ev.target.value;
-
-    setCity(city);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -140,14 +131,13 @@ export function AddressForm({ title, handleNext, nextStep }: AddressFormProps) {
             ))}
           </Select>
           <Select
+            key={state}
             isRequired
             items={cities}
             label="City"
             labelPlacement="outside"
             name="city"
             placeholder="Enter your city"
-            selectedKeys={[city]}
-            onChange={handleCityChange}
           >
             {(city) => <SelectItem key={city.key}>{city.label}</SelectItem>}
           </Select>

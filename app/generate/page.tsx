@@ -1,9 +1,9 @@
 "use client";
 
 import { Tabs, Tab } from "@heroui/tabs";
-import { Card, CardBody } from "@heroui/card";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { addToast } from "@heroui/toast";
 
 import { buyShipping, generateShipping } from "../actions";
 
@@ -34,26 +34,12 @@ const ShippingTabsMap = {
   [TabsValue.Result]: "result",
 };
 
-const initialAddressForm: AddressInput = {
-  name: "",
-  company: "",
-  street1: "",
-  street2: "",
-  city: "",
-  state: "",
-  zip: "",
-  phone: "",
-  email: "",
-  country: "US",
-  mode: "test",
-};
-
 export default function Generate() {
   const [loading, setLoading] = useState(false);
   const [tab, setTab] = useState<TabsValueType>(TabsValue.To);
   const [generateData, setGenerateData] = useState<GenerateState>({
-    to_address: initialAddressForm,
-    from_address: initialAddressForm,
+    to_address: undefined,
+    from_address: undefined,
   });
 
   const { push } = useRouter();
@@ -88,12 +74,17 @@ export default function Generate() {
         throw new Error("No rates found");
       }
 
-      let selectedRate = rates.find((rate) => rate.carrier === "usps");
+      let selectedRate = rates.find((rate) => rate.carrier === "USPS");
 
       if (!selectedRate) {
-        // throw new Error("No USPS rate found");
         selectedRate = rates[0];
+        addToast({
+          title: "Warning",
+          description: `No USPS rate found for this address, using ${selectedRate.carrier}`,
+          color: "warning",
+        });
       }
+
       const buyResponse = await buyShipping({
         rateId: selectedRate.id,
         shipmentId: selectedRate.shipment_id,
@@ -102,6 +93,7 @@ export default function Generate() {
       if (buyResponse.error) {
         throw new Error(buyResponse.error.message);
       }
+
       const parsedBuyResponse = ShippingSchema.parse(buyResponse.data);
       const params = searchParamsSerializer({
         carrier: selectedRate.carrier,
@@ -110,7 +102,14 @@ export default function Generate() {
 
       push(siteConfig.routes.result + params);
     } catch (error) {
-      console.log("🚀 ~ handleSubmit ~ error:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Something went wrong";
+
+      addToast({
+        title: "Error",
+        description: errorMessage,
+        color: "danger",
+      });
     } finally {
       setLoading(false);
     }
@@ -129,11 +128,7 @@ export default function Generate() {
           selectedKey={tab}
           onSelectionChange={(key) => setTab(key as TabsValueType)}
         >
-          <Tab
-            key={TabsValue.To}
-            //  disabled={tab !== TabsValue.To}
-            title={TabsValue.To}
-          >
+          <Tab key={TabsValue.To} title={TabsValue.To}>
             <AddressForm
               handleNext={handleNext}
               nextStep={TabsValue.From}
@@ -142,7 +137,7 @@ export default function Generate() {
           </Tab>
           <Tab
             key={TabsValue.From}
-            //   disabled={tab !== TabsValue.From}
+            disabled={!generateData.to_address}
             title={TabsValue.From}
           >
             <AddressForm
@@ -153,23 +148,10 @@ export default function Generate() {
           </Tab>
           <Tab
             key={TabsValue.Parcel}
-            //   disabled={tab !== TabsValue.Parcel}
+            disabled={!generateData.from_address}
             title={TabsValue.Parcel}
           >
-            <ParcelForm handleNext={handleSubmit} />
-          </Tab>
-
-          <Tab
-            key={TabsValue.Result}
-            disabled={tab !== TabsValue.Result}
-            title={TabsValue.Result}
-          >
-            <Card>
-              <CardBody>
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa
-                qui officia deserunt mollit anim id est laborum.
-              </CardBody>
-            </Card>
+            <ParcelForm handleNext={handleSubmit} isLoading={loading} />
           </Tab>
         </Tabs>
       </div>

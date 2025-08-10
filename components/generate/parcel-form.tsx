@@ -10,16 +10,14 @@ import { ParcelInputSchema, ParcelOutput } from "@/types/generate";
 
 type ParcelFormProps = {
   handleNext: (formData: ParcelOutput) => void;
+  isLoading: boolean;
 };
 
-export function ParcelForm({ handleNext }: ParcelFormProps) {
+export function ParcelForm({ handleNext, isLoading }: ParcelFormProps) {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
-
     const parsed = ParcelInputSchema.parse(data);
-
-    console.log("🚀 ~ handleSubmit ~ parsed:", parsed);
 
     handleNext(parsed);
   };
@@ -61,8 +59,9 @@ export function ParcelForm({ handleNext }: ParcelFormProps) {
         </div>
       </div>
       <Button
-        color="secondary"
+        color="success"
         endContent={<SparkleIcon size={32} />}
+        isLoading={isLoading}
         size="lg"
         type="submit"
       >

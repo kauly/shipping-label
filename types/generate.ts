@@ -3,7 +3,7 @@ import { z } from "zod";
 import { ParcelSchema } from "./parcel";
 import { AddressSchema } from "./address";
 
-export const TabsEnum = z.enum(["To", "From", "Parcel", "Result"]);
+export const TabsEnum = z.enum(["To", "From", "Parcel"]);
 
 export const AddressInputSchema = AddressSchema.pick({
   name: true,
@@ -37,7 +37,7 @@ export type ParcelInput = z.infer<typeof ParcelInputSchema>;
 export type ParcelOutput = z.output<typeof ParcelInputSchema>;
 
 export type GenerateState = {
-  to_address: AddressInput;
-  from_address: AddressInput;
+  to_address?: AddressInput;
+  from_address?: AddressInput;
 };
 export type TabsValueType = z.infer<typeof TabsEnum>;

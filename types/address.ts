@@ -16,7 +16,7 @@ export const AddressSchema = z.object({
   zip: z.string(),
   country: z.string(),
   phone: z.string().nullable(),
-  email: z.union([z.literal(""), z.email()]),
+  email: z.union([z.literal(""), z.email()]).nullable(),
   carrier_facility: z.string().nullable(),
   residential: z.boolean().nullable(),
   federal_tax_id: z.string().nullable(),
