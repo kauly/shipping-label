@@ -20,51 +20,48 @@ const states = State.getStatesOfCountry("US").map((state) => ({
 
 type AddressFormProps = {
   title: string;
-  initialForm: AddressInput;
   handleNext: (formData: AddressInput, nextStep: TabsValueType) => void;
   nextStep: TabsValueType;
 };
 
-export function AddressForm({
-  title,
-  initialForm,
-  handleNext,
-  nextStep,
-}: AddressFormProps) {
-  const [form, setForm] = useState<AddressInput>(initialForm);
+export function AddressForm({ title, handleNext, nextStep }: AddressFormProps) {
   const [cities, setCities] = useState<{ key: string; label: string }[]>([]);
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
 
   const handleStateChange = (ev: ChangeEvent<HTMLSelectElement>) => {
     const state = ev.target.value;
 
+    setState(state);
+
     const cities = City.getCitiesOfState("US", state);
 
-    setCities(
-      cities.map((city) => ({
+    if (cities.length) {
+      const citiesMap = cities.map((city) => ({
         key: city.name,
         label: city.name,
-      })),
-    );
-    setForm((p) => ({ ...p, state }));
+      }));
+
+      setCity("");
+
+      setCities(citiesMap);
+    }
   };
 
   const handleCityChange = (ev: ChangeEvent<HTMLSelectElement>) => {
     const city = ev.target.value;
 
-    setForm((p) => ({ ...p, city }));
-  };
-
-  const handleFormChange = (ev: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = ev.target;
-
-    setForm((p) => ({ ...p, [name]: value }));
+    setCity(city);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget));
 
-    const parsed = AddressInputSchema.parse(data);
+    const parsed = AddressInputSchema.parse({
+      ...data,
+      country: "US",
+    });
 
     handleNext(parsed, nextStep);
   };
@@ -81,8 +78,6 @@ export function AddressForm({
             name="name"
             placeholder="Enter your name"
             type="text"
-            value={form.name || ""}
-            onChange={handleFormChange}
           />
 
           <Input
@@ -91,8 +86,6 @@ export function AddressForm({
             name="email"
             placeholder="Enter your email"
             type="email"
-            value={form.email || ""}
-            onChange={handleFormChange}
           />
           <Input
             label="Phone"
@@ -100,8 +93,6 @@ export function AddressForm({
             name="phone"
             placeholder="Enter your phone"
             type="tel"
-            value={form.phone || ""}
-            onChange={handleFormChange}
           />
           <Input
             label="Company"
@@ -109,8 +100,6 @@ export function AddressForm({
             name="company"
             placeholder="Enter your company"
             type="text"
-            value={form.company || ""}
-            onChange={handleFormChange}
           />
         </div>
       </div>
@@ -118,6 +107,17 @@ export function AddressForm({
       <div className="flex flex-col gap-4">
         <p className="text-md font-semibold">Address</p>
         <div className="flex flex-col gap-4 w-xs md:w-sm">
+          <Select
+            isDisabled
+            isRequired
+            label="Country"
+            labelPlacement="outside"
+            name="country"
+            placeholder="Enter your country"
+            selectedKeys={["US"]}
+          >
+            <SelectItem key="US">United States</SelectItem>
+          </Select>
           <Input
             isRequired
             label="Zip"
@@ -125,8 +125,6 @@ export function AddressForm({
             name="zip"
             placeholder="Enter your zip"
             type="text"
-            value={form.zip || ""}
-            onChange={handleFormChange}
           />
           <Select
             isRequired
@@ -134,7 +132,7 @@ export function AddressForm({
             labelPlacement="outside"
             name="state"
             placeholder="Enter your state"
-            selectedKeys={[form.state]}
+            selectedKeys={[state]}
             onChange={handleStateChange}
           >
             {states.map((state) => (
@@ -148,7 +146,7 @@ export function AddressForm({
             labelPlacement="outside"
             name="city"
             placeholder="Enter your city"
-            selectedKeys={[form.city]}
+            selectedKeys={[city]}
             onChange={handleCityChange}
           >
             {(city) => <SelectItem key={city.key}>{city.label}</SelectItem>}
@@ -160,8 +158,6 @@ export function AddressForm({
             name="street1"
             placeholder="Enter your street 1"
             type="text"
-            value={form.street1}
-            onChange={handleFormChange}
           />
           <Input
             label="Street 2"
@@ -169,8 +165,6 @@ export function AddressForm({
             name="street2"
             placeholder="Enter your street 2"
             type="text"
-            value={form.street2 || ""}
-            onChange={handleFormChange}
           />
         </div>
       </div>

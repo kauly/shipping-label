@@ -1,53 +1,36 @@
-# Next.js & HeroUI Template
+# Shipping Label
 
-This is a template for creating applications using Next.js 14 (app directory) and HeroUI (v2).
+Application to generate shipping labels using the USPS API. To generate a valid response you need to provide a valid zip code and the state of the zip code. For instance:
 
-[Try it on CodeSandbox](https://githubbox.com/heroui-inc/heroui/next-app-template)
+ - `zipCode`: `89010`
+ - `state`: `CA`
 
-## Technologies Used
+Or
 
-- [Next.js 14](https://nextjs.org/docs/getting-started)
-- [HeroUI v2](https://heroui.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+ - `zipCode`: `89019`
+ - `state`: `CA`
 
-## How to Use
+## Development
 
-### Use the template with create-next-app
-
-To create a new project based on this template using `create-next-app`, run the following command:
+This project is using pnpm as the package manager. To install the dependencies run:
 
 ```bash
-npx create-next-app -e https://github.com/heroui-inc/next-app-template
+pnpm install
 ```
 
-### Install dependencies
-
-You can use one of them `npm`, `yarn`, `pnpm`, `bun`, Example using `npm`:
+To run the development server run:
 
 ```bash
-npm install
+pnpm run dev
 ```
 
-### Run the development server
+## Environment variables
 
-```bash
-npm run dev
-```
+You need to provide the following environment variables:
 
-### Setup pnpm (optional)
+- `USPS_API_KEY`: The API key for the USPS API.
+- `EASYPOST_API_URL`: The API URL for the EasyPost API (default: `https://api.easypost.com/v2`).
 
-If you are using `pnpm`, you need to add the following code to your `.npmrc` file:
+You can create a `.env.local` file in the root of the project to provide the environment variables.
 
-```bash
-public-hoist-pattern[]=*@heroui/*
-```
 
-After modifying the `.npmrc` file, you need to run `pnpm install` again to ensure that the dependencies are installed correctly.
-
-## License
-
-Licensed under the [MIT license](https://github.com/heroui-inc/next-app-template/blob/main/LICENSE).
